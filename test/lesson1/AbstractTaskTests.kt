@@ -42,7 +42,12 @@ abstract class AbstractTaskTests : AbstractFileTests() {
     }
 
     protected fun sortAddresses(sortAddresses: (String, String) -> Unit) {
-        // TODO: large test
+        try {
+            sortAddresses("input/addr_in2.txt", "temp.txt")
+            assertFileContent("temp.txt", File("input/addr_out2.txt").readLines().joinToString(separator = "\n"))
+        } finally {
+            File("temp.txt").delete()
+        }
         try {
             sortAddresses("input/addr_in1.txt", "temp.txt")
             assertFileContent("temp.txt",
@@ -50,6 +55,20 @@ abstract class AbstractTaskTests : AbstractFileTests() {
                     Железнодорожная 3 - Петров Иван
                     Железнодорожная 7 - Иванов Алексей, Иванов Михаил
                     Садовая 5 - Сидоров Петр, Сидорова Мария
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortAddresses("input/addr_in3.txt", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                    Железнодорожная 7 - Иванов Алексей, Иванов Михаил
+                    Железнодорожная 69 - Сидорова Мария
+                    Железнодорожная 333 - ﻿Петров Иван
+                    Садовая 5 - Сидорова Мария
+                    Садовый проспект 5 - Сидоров Петр
                 """.trimIndent()
             )
         } finally {
@@ -98,6 +117,44 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {
+            sortTemperatures("input/temp_in2.txt", "temp.txt")
+            assertFileContent("temp.txt",
+                    """
+                    -273.0
+                    -100.1
+                    -98.4
+                    -12.6
+                    -12.6
+                    0.0
+                    0.0
+                    0.0
+                    0.0
+                    0.0
+                    0.0
+                    11.0
+                    24.7
+                    99.5
+                    121.3
+                    273.0
+                    499.0
+                    499.1
+                    499.2
+                    499.3
+                    499.4
+                    499.5
+                    499.6
+                    499.7
+                    499.8
+                    499.9
+                    500.0
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
+
 
         fun testGeneratedTemperatures(size: Int) {
             try {
@@ -113,7 +170,7 @@ abstract class AbstractTaskTests : AbstractFileTests() {
             }
         }
         testGeneratedTemperatures(10)
-        testGeneratedTemperatures(5000)
+        testGeneratedTemperatures(500)
     }
 
     protected fun sortSequence(sortSequence: (String, String) -> Unit) {

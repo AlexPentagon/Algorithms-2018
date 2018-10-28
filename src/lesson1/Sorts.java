@@ -7,12 +7,37 @@ import java.util.Random;
 @SuppressWarnings("WeakerAccess")
 public class Sorts {
 
+    public static int compare(String first, String second){      // for comparing by two fields(word,number);
+        try {
+            if (first.split(" ")[0].compareTo(second.split(" ")[0]) > 0) return 1;
+            else if (first.split(" ")[0].compareTo(second.split(" ")[0]) == 0) {
+                if (Integer.parseInt(first.split(" ")[1]) > Integer.parseInt(second.split(" ")[1])) return 1;
+                else return 0;
+            } else return -1;
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+        return first.compareTo(second);
+    }
+
     public static <T extends Comparable<T>> void insertionSort(T[] elements) {
         for (int i = 1; i < elements.length; i++) {
             T current = elements[i];
             int j = i - 1;
             for (; j >= 0; j--) {
                 if (elements[j].compareTo(current) > 0) elements[j+1] = elements[j];
+                else break;
+            }
+            elements[j+1] = current;
+        }
+    }
+
+    public static <T extends Comparable<T>> void insertionSort(String[] elements,boolean b) {//Uses special function compare()
+        for (int i = 1; i < elements.length; i++) {
+            String current = elements[i];
+            int j = i - 1;
+            for (; j >= 0; j--) {
+                if (compare(elements[j],current) > 0) elements[j+1] = elements[j];
                 else break;
             }
             elements[j+1] = current;

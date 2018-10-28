@@ -1,5 +1,15 @@
 package lesson1;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import kotlin.NotImplementedError;
 
 @SuppressWarnings("unused")
@@ -63,9 +73,48 @@ public class JavaTasks {
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
     static public void sortAddresses(String inputName, String outputName) {
-        throw new NotImplementedError();
-    }
+        HashMap<String,ArrayList<String>> map = new HashMap<>();
+        try{
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputName)));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
+            String strLine;
+            while ((strLine = br.readLine()) != null){                  // T=O(l)   l-value of lines
+                ArrayList<String> list = new ArrayList<>();
+                String addr = strLine.split("-")[1].trim();
+                String name = strLine.split("-")[0].trim();
+                if(map.get(addr) != null){
+                    list = map.get(addr);
+                    list.add(name);
+                    map.remove(addr);
+                    map.put(addr,list);
+                }else{
+                    list.add(name);
+                    map.put(addr,list);
+                }
+            }
 
+            String[] arr = map.keySet().toArray(new String[map.keySet().size()]);
+            Sorts.insertionSort(arr,true);                                      //T=O(n^2)
+
+            for(int i = 0;i < arr.length;i++){                                      //T=O(a) a-value of addresses
+               String[] list = map.get(arr[i]).toArray(new String[map.get(arr[i]).size()]);
+               Sorts.insertionSort(list);                                           //T=O(names^2) names-value of names in address
+               String string = arr[i] + " - ";
+               for(int j = 0;j < list.length;j++) {                                 //T=O(names)
+                  if(j != list.length-1) string += list[j] + ", ";
+                  else string += list[j];
+               }
+               bw.write(string);
+               bw.newLine();
+            }
+            br.close();
+            bw.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
+    //Итог: T=O(N^2) R=O(N)
     /**
      * Сортировка температур
      *
@@ -97,8 +146,32 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+        int[] arr = new int[77301];
+        try{
+            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputName)));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
+            String strLine;
+            while ((strLine = br.readLine()) != null){
+                int num = (int)(Double.parseDouble(strLine) * 10);
+                arr[num + 2730] = arr[num + 2730] + 1;
+            }
+
+            for(int i = 0;i < arr.length;i++){
+                while(arr[i] != 0){
+                    double d = (double)(i - 2730) / 10;
+                    bw.write(String.valueOf(d));
+                    bw.newLine();
+                    arr[i]--;
+                }
+            }
+            br.close();
+            bw.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
+            //Итог: T=O(N) R=O(N)
 
     /**
      * Сортировка последовательности
@@ -151,3 +224,4 @@ public class JavaTasks {
         throw new NotImplementedError();
     }
 }
+
