@@ -3,6 +3,7 @@ package lesson3
 import org.junit.jupiter.api.Tag
 import kotlin.test.Test
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -106,7 +107,11 @@ class BinaryTreeTest {
             val binaryIt = binarySet.iterator()
             println("Traversing $list")
             while (treeIt.hasNext()) {
-                assertEquals(treeIt.next(), binaryIt.next())
+                try {
+                    assertEquals(treeIt.next(), binaryIt.next())
+                } catch (e: NoSuchElementException) {
+                    break
+                }
             }
         }
     }
@@ -169,5 +174,37 @@ class BinaryTreeTest {
     @Tag("Hard")
     fun testIteratorRemoveJava() {
         testIteratorRemove { createJavaTree() }
+    }
+
+
+    private fun testSubSet(create: () -> CheckableSortedSet<Int>) {
+        val random = Random()
+        for (iteration in 1..100) {
+            val list = mutableListOf<Int>()
+            for (i in 1..20) {
+                list.add(random.nextInt(100))
+            }
+            val treeSet = TreeSet<Int>()
+            val binarySet = create()
+            for (element in list) {
+                treeSet += element
+                binarySet += element
+            }
+            var fromElement = 1
+            var toElement = 0
+            while (fromElement > toElement) {
+                fromElement = random.nextInt(100)
+                toElement = random.nextInt(100)
+                if (!binarySet.contains(fromElement) || !binarySet.contains(toElement)) fromElement = 101
+            }
+            //binarySet.subSet()
+        }
+
+    }
+
+    @Test
+    @Tag("Impossible")
+    fun testSubSetJava() {
+        testSubSet { createJavaTree() }
     }
 }
