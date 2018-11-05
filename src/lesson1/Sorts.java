@@ -2,6 +2,7 @@ package lesson1;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Random;
 
 @SuppressWarnings("WeakerAccess")
@@ -32,17 +33,6 @@ public class Sorts {
         }
     }
 
-    public static <T extends Comparable<T>> void insertionSort(String[] elements,boolean b) {//Uses special function compare()
-        for (int i = 1; i < elements.length; i++) {
-            String current = elements[i];
-            int j = i - 1;
-            for (; j >= 0; j--) {
-                if (compare(elements[j],current) > 0) elements[j+1] = elements[j];
-                else break;
-            }
-            elements[j+1] = current;
-        }
-    }
 
     public static void insertionSort(int[] elements) {
         for (int i = 1; i < elements.length; i++) {
@@ -166,4 +156,44 @@ public class Sorts {
         }
         return out;
     }
+
+
+
+    private static void swap(Object[] array, int i, int j) {
+        Object tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+
+    private static int partition(String[] array, int begin, int end,boolean by2Fields) {
+        int index = begin + new Random().nextInt(end - begin + 1);
+        String pivot = array[index];
+        swap(array, index, end);
+        for (int i = index = begin; i < end; ++ i) {
+            if(by2Fields) {
+                if (compare(array[i], pivot) <= 0) {
+                    swap(array, index++, i);
+                }
+            }else {
+                if (array[i].compareTo(pivot) <= 0) {
+                    swap(array, index++, i);
+                }
+            }
+        }
+        swap(array, index, end);
+        return (index);
+    }
+
+    private static void qsort(String[] array, int begin, int end,boolean by2Fields) {
+        if (end > begin) {
+            int index = partition(array, begin, end,by2Fields);
+            qsort(array, begin, index - 1, by2Fields);
+            qsort(array, index + 1,  end, by2Fields);
+        }
+    }
+
+    public static void sort(String[] array, boolean by2Fields) {
+        qsort(array, 0, array.length - 1,by2Fields);
+    }
+
 }

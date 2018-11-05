@@ -15,6 +15,7 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -94,8 +95,9 @@ public class JavaAlgorithms {
      * Х   Х
      * Х х Х
      */
-    static public int josephTask(int menNumber, int choiceInterval) {
 
+
+    static public int josephTask(int menNumber,int choiceInterval){
         int mn = menNumber;
         if (choiceInterval < 1 || mn < 1) throw new IllegalArgumentException();      //Checking some popular and
         if (choiceInterval == 1) return mn;                                          //easy predictable cases
@@ -104,15 +106,46 @@ public class JavaAlgorithms {
             if (mn == 1) return 1;                                                  //
         }
 
+        if(choiceInterval <= 100 && menNumber <=10000000 ||
+                menNumber <= 100 && choiceInterval <=10000000 ) return josephMN(menNumber,choiceInterval);
+        return josephN(menNumber,choiceInterval);
+    }
+    // нужно более четко отрегулировать выбор какой либо из функций
+    // первая(M * N) функция имеет право на жизнь т.к.
+    // 1)у реализации через LinkedList может возникнуть переполнение памяти
+    // 2)при параметрах : одно близкое к нулю, другое в районе 10 000 000 и больше,
+    // первая(M * N)функция работает гораздо быстрее
+    // 3)первая функция проходит тесты быстрее
+
+    static int josephN(int menNumber, int choiceInterval){
+        List<Integer> list = new LinkedList<>();                    //R=O(N) + LinkedList требует еще памяти
+        for(int i = 1;i <= menNumber;i++){
+            list.add(i);
+        }
+        int c = -1;
+        for(int i = 0; i < menNumber - 1; i++) {                    // T=O(N)
+            c += choiceInterval;
+            if (c >= list.size()) c = c % list.size();
+
+            list.remove(c);
+            c--;
+
+        }
+        return list.get(0);
+    }
+// Итог: T=O(N);R=O(N)
+
+    static public int josephMN(int menNumber, int choiceInterval) {
+        int mn = menNumber;
         int[] arr = new int[mn];
         for (int i = 0; i < mn; i++) {                //T=O(menNumber)
-            arr[i] = i + 1;                       //R=O(menNumber)
+            arr[i] = i + 1;                           //R=O(menNumber)
         }
 
         int c = 0;
         int counter = 0;
         while (counter != mn - 1) {                 //T=O(c) c = choiceInterval
-            for (int i = 0; i < mn; i++) {       //T=O(m)  m = menNumber
+            for (int i = 0; i < mn; i++) {          //T=O(m)  m = menNumber
                 if (arr[i] != 0) c++;
                 if (c == choiceInterval) {
                     arr[i] = 0;

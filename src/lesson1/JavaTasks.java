@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import kotlin.NotImplementedError;
 
@@ -72,49 +75,46 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortAddresses(String inputName, String outputName) {
-        HashMap<String,ArrayList<String>> map = new HashMap<>();
-        try{
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputName)));
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
-            String strLine;
-            while ((strLine = br.readLine()) != null){                  // T=O(l)   l-value of lines
-                ArrayList<String> list = new ArrayList<>();
-                String addr = strLine.split("-")[1].trim();
-                String name = strLine.split("-")[0].trim();
-                if(map.get(addr) != null){
-                    list = map.get(addr);
-                    list.add(name);
-                    map.remove(addr);
-                    map.put(addr,list);
-                }else{
-                    list.add(name);
-                    map.put(addr,list);
-                }
+    static public void sortAddresses(String inputName, String outputName) throws IOException {
+        Map<String,List<String>> map = new HashMap<>();
+        BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputName)));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
+        String strLine;
+        while ((strLine = br.readLine()) != null){                  // T=O(l)   l-value of lines
+            List<String> list = new ArrayList<>();
+            String addr = strLine.split("-")[1].trim();
+            String name = strLine.split("-")[0].trim();
+            if(map.get(addr) != null){
+                list = map.get(addr);
+                list.add(name);
+                map.remove(addr);
+                map.put(addr,list);
+            }else{
+                list.add(name);
+                map.put(addr,list);
             }
-
-            String[] arr = map.keySet().toArray(new String[map.keySet().size()]);
-            Sorts.insertionSort(arr,true);                                      //T=O(n^2)
-
-            for(int i = 0;i < arr.length;i++){                                      //T=O(a) a-value of addresses
-               String[] list = map.get(arr[i]).toArray(new String[map.get(arr[i]).size()]);
-               Sorts.insertionSort(list);                                           //T=O(names^2) names-value of names in address
-               String string = arr[i] + " - ";
-               for(int j = 0;j < list.length;j++) {                                 //T=O(names)
-                  if(j != list.length-1) string += list[j] + ", ";
-                  else string += list[j];
-               }
-               bw.write(string);
-               bw.newLine();
-            }
-            br.close();
-            bw.close();
-        }catch (IOException e){
-            e.printStackTrace();
         }
 
+        String[] arr = map.keySet().toArray(new String[map.keySet().size()]);
+        Sorts.sort(arr,true);                                      //T=O(n * log(n))
+
+        for(int i = 0;i < arr.length;i++){                                      //T=O(a) a-value of addresses
+           String[] list = map.get(arr[i]).toArray(new String[map.get(arr[i]).size()]);
+           Sorts.sort(list,false);                                           //T=O(n * log n) n-value of names in address
+           String string = arr[i] + " - ";
+           for(int j = 0;j < list.length;j++) {                                 //T=O(names)
+              if(j != list.length-1) string += list[j] + ", ";
+              else string += list[j];
+           }
+           bw.write(string);
+           bw.newLine();
+        }
+        br.close();
+        bw.close();
     }
-    //Итог: T=O(N^2) R=O(N)
+    //Итог: T=O(n * log(n)) R=O(N)
+
+
     /**
      * Сортировка температур
      *

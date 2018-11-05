@@ -197,7 +197,8 @@ class BinaryTreeTest {
                 toElement = random.nextInt(100)
                 if (!binarySet.contains(fromElement) || !binarySet.contains(toElement)) fromElement = 101
             }
-            //binarySet.subSet()
+            assertEquals(treeSet.subSet(fromElement, toElement), binarySet.subSet(fromElement, toElement))
+            assertEquals(treeSet.subSet(fromElement, toElement), binarySet.subSet(fromElement, toElement))
         }
 
     }
@@ -206,5 +207,64 @@ class BinaryTreeTest {
     @Tag("Impossible")
     fun testSubSetJava() {
         testSubSet { createJavaTree() }
+    }
+
+
+    private fun testHeadSet(create: () -> CheckableSortedSet<Int>) {
+        val random = Random()
+        for (iteration in 1..100) {
+            val list = mutableListOf<Int>()
+            for (i in 1..20) {
+                list.add(random.nextInt(100))
+            }
+            val treeSet = TreeSet<Int>()
+            val binarySet = create()
+            for (element in list) {
+                treeSet += element
+                binarySet += element
+            }
+            var toElement = 0
+            while (!binarySet.contains(toElement)) {
+                toElement = random.nextInt(100)
+            }
+            assertEquals(treeSet.headSet(toElement), binarySet.headSet(toElement))
+            assertEquals(treeSet.headSet(toElement), binarySet.headSet(toElement))
+        }
+
+    }
+
+    @Test
+    @Tag("Impossible")
+    fun testHeadSetJava() {
+        testHeadSet { createJavaTree() }
+    }
+
+    private fun testTailSet(create: () -> CheckableSortedSet<Int>) {
+        val random = Random()
+        for (iteration in 1..100) {
+            val list = mutableListOf<Int>()
+            for (i in 1..20) {
+                list.add(random.nextInt(100))
+            }
+            val treeSet = TreeSet<Int>()
+            val binarySet = create()
+            for (element in list) {
+                treeSet += element
+                binarySet += element
+            }
+            var fromElement = 0
+            while (!binarySet.contains(fromElement)) {
+                fromElement = random.nextInt(100)
+            }
+            assertEquals(treeSet.tailSet(fromElement), binarySet.tailSet(fromElement))
+            assertEquals(treeSet.tailSet(fromElement), binarySet.tailSet(fromElement))
+        }
+
+    }
+
+    @Test
+    @Tag("Impossible")
+    fun testTailSetJava() {
+        testTailSet { createJavaTree() }
     }
 }
