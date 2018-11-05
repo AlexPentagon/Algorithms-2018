@@ -234,7 +234,7 @@ class BinaryTreeTest {
     }
 
     @Test
-    @Tag("Impossible")
+    @Tag("Hard")
     fun testHeadSetJava() {
         testHeadSet { createJavaTree() }
     }
@@ -263,7 +263,7 @@ class BinaryTreeTest {
     }
 
     @Test
-    @Tag("Impossible")
+    @Tag("Hard")
     fun testTailSetJava() {
         testTailSet { createJavaTree() }
     }
