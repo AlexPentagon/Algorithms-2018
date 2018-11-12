@@ -69,6 +69,7 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(2308,josephTask(4693, 94))
         assertEquals(162541,josephTask(10000000,5))
         assertEquals(609,josephTask(1000,1000))
+        assertEquals(2019,josephTask(10000,10000))
         var menNumber = 2
         for (i in 1..20) {
             assertEquals(1, josephTask(menNumber, 2))

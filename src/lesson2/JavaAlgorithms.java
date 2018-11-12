@@ -107,7 +107,8 @@ public class JavaAlgorithms {
         }
 
         if(choiceInterval <= 100 && menNumber <=10000000 ||
-                menNumber <= 100 && choiceInterval <=10000000 ) return josephMN(menNumber,choiceInterval);
+                menNumber <= 100 && choiceInterval <=10000000 )
+            return josephMN(menNumber,choiceInterval);
         return josephN(menNumber,choiceInterval);
     }
     // нужно более четко отрегулировать выбор какой либо из функций
@@ -133,7 +134,11 @@ public class JavaAlgorithms {
         }
         return list.get(0);
     }
+
+
 // Итог: T=O(N);R=O(N)
+
+
 
     static public int josephMN(int menNumber, int choiceInterval) {
         int mn = menNumber;
@@ -161,7 +166,6 @@ public class JavaAlgorithms {
 
         return 0;
     }
-
     // Итог: T=O(m*n);R=O(N)
 
     /**

@@ -145,15 +145,14 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
         int[] arr = new int[77301];
-        try{
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(inputName)));
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
             String strLine;
             while ((strLine = br.readLine()) != null){
                 int num = (int)(Double.parseDouble(strLine) * 10);
-                arr[num + 2730] = arr[num + 2730] + 1;
+                arr[num + 2730]++;
             }
 
             for(int i = 0;i < arr.length;i++){
@@ -166,12 +165,9 @@ public class JavaTasks {
             }
             br.close();
             bw.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
     }
             //Итог: T=O(N) R=O(N)
+
 
     /**
      * Сортировка последовательности

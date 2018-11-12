@@ -4,16 +4,11 @@ import kotlin.NotImplementedError;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 @SuppressWarnings("unused")
 public class JavaDynamicTasks {
@@ -88,39 +83,24 @@ public class JavaDynamicTasks {
             }
         }
 
+        ArrayList<Integer> list = new ArrayList<>();
+        recursion(field,list,heigh-1,width-1,0);
 
-        Map<String,Integer> list = new HashMap<>();
-        rec(field,list,heigh-1,width-1,"");
-
-        int value = Collections.min(list.values());
-
-        return value;
+        return Collections.min(list);
     }
+//    Итог:  T=O(?)  ? - values of paths in matrix
+//           R=O(?)
 
-    public static Map<String,Integer> rec(int[][] field,Map<String,Integer> map,int x,int y,String st){
+    public static ArrayList<Integer> recursion(int[][] field,ArrayList<Integer> list,int x,int y,int sum){
         int curr = field[x][y];
-        int sum = 0;
-        String key = st + curr + " ";
-            if(key.charAt(key.length()-2) == '0'){
-                for(int i = 0;i < key.split(" ").length-1;i++){
+        sum = sum + curr;
+        if(curr == 0 && sum != 0) list.add(sum);
 
-                   sum = sum + Integer.parseInt(key.split(" ")[i]);
-                }
-                if(sum != 0)map.put(key,sum);
-            }
+        if(x - 1 != -1 && y - 1 != -1) recursion(field,list,x - 1, y - 1,sum);
+        if(x - 1 != -1) recursion(field,list,x - 1, y,sum);
+        if(y - 1 != -1) recursion(field,list,x, y - 1,sum);
 
-        if(x - 1 != -1 && y - 1 != -1) rec(field,map,x - 1, y - 1, key);
-        if(x - 1 != -1) rec(field,map,x - 1, y, key);
-        if(y - 1 != -1) rec(field,map,x, y - 1, key);
-
-return map;
-    }
-
-
-    public static void main(String[] args) {
-        try{
-            System.out.println(shortestPathOnField("D://note5.txt"));
-        }catch (IOException e){}
+        return list;
     }
 
     // Задачу "Максимальное независимое множество вершин в графе без циклов"
