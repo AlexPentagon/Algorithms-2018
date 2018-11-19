@@ -37,11 +37,9 @@ abstract class AbstractHeadTailTest {
 
 
 
-        try {
-            set = tree.headSet(127)
-            for (i in 1..10)
-                assertEquals(true, set.contains(i))
-        }catch (e : IllegalArgumentException){e.printStackTrace()}
+        set = tree.headSet(127)
+        for (i in 1..10)
+            assertEquals(true, set.contains(i))
     }
 
     protected fun doTailSetTest() {
@@ -57,43 +55,43 @@ abstract class AbstractHeadTailTest {
         assertEquals(true, set.contains(9))
         assertEquals(true, set.contains(10))
 
-        try {
-            set = tree.tailSet(-128)
-            for (i in 1..10)
-                assertEquals(true, set.contains(i))
-        }catch (e : IllegalArgumentException){ e.printStackTrace() }
+
+        set = tree.tailSet(-128)
+        for (i in 1..10)
+            assertEquals(true, set.contains(i))
     }
+
 
     protected fun doHeadSetRelationTest() {
         val set: SortedSet<Int> = tree.headSet(7)
         assertEquals(6, set.size)
         assertEquals(10, tree.size)
-        set.add(0)
+        tree.add(0)
         assertTrue(set.contains(0))
-//        tree.remove(4)
-//        assertFalse(tree.contains(4))
-//        tree.remove(6)
-//        assertFalse(set.contains(6))
+        set.remove(4)
+        assertFalse(tree.contains(4))
+        tree.remove(6)
+        assertFalse(set.contains(6))
         tree.add(12)
         assertFalse(set.contains(12))
-        assertEquals(7, set.size)
-        assertEquals(11, tree.size)
+        assertEquals(5, set.size)
+        assertEquals(10, tree.size)
     }
 
     protected fun doTailSetRelationTest() {
         val set: SortedSet<Int> = tree.tailSet(4)
         assertEquals(7, set.size)
         assertEquals(10, tree.size)
-        set.add(12)
+        tree.add(12)
         assertTrue(set.contains(12))
-//        set.remove(4)
-//        assertFalse(tree.contains(4))
-//        tree.remove(6)
-//        assertFalse(set.contains(6))
+        set.remove(4)
+        assertFalse(tree.contains(4))
+        tree.remove(6)
+        assertFalse(set.contains(6))
         tree.add(0)
         assertFalse(set.contains(0))
-        assertEquals(8, set.size)
-        assertEquals(11, tree.size)
+        assertEquals(6, set.size)
+        assertEquals(10, tree.size)
     }
 
     protected fun doSubSetTest() {

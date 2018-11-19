@@ -1,6 +1,7 @@
 package lesson3;
 
 import kotlin.NotImplementedError;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,13 +40,11 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         if (closest == null) {
             root = newNode;
 
-        }
-        else if (comparison < 0) {
+        } else if (comparison < 0) {
             assert closest.left == null;
             newNode.parent = closest;
             closest.left = newNode;
-        }
-        else {
+        } else {
             assert closest.right == null;
             newNode.parent = closest;
             closest.right = newNode;
@@ -60,7 +59,9 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
 
     private boolean checkInvariant(Node<T> node) {
         Node<T> left = node.left;
-        if (left != null && (left.value.compareTo(node.value) >= 0 || !checkInvariant(left))) return false;
+        if (left != null && (left.value.compareTo(node.value) >= 0 || !checkInvariant(left))) {
+            return false;
+        }
         Node<T> right = node.right;
         return right == null || right.value.compareTo(node.value) > 0 && checkInvariant(right);
     }
@@ -75,6 +76,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         throw new NotImplementedError();
     }
 
+
     @Override
     public boolean contains(Object o) {
         @SuppressWarnings("unchecked")
@@ -84,7 +86,9 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     }
 
     private Node<T> find(T value) {
-        if (root == null) return null;
+        if (root == null) {
+            return null;
+        }
         return find(root, value);
     }
 
@@ -92,13 +96,15 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         int comparison = value.compareTo(start.value);
         if (comparison == 0) {
             return start;
-        }
-        else if (comparison < 0) {
-            if (start.left == null) return start;
+        } else if (comparison < 0) {
+            if (start.left == null) {
+                return start;
+            }
             return find(start.left, value);
-        }
-        else {
-            if (start.right == null) return start;
+        } else {
+            if (start.right == null) {
+                return start;
+            }
             return find(start.right, value);
         }
     }
@@ -116,6 +122,9 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
                 node = node.left;
             }
         }
+//        preparing iterator
+//        T=O(logN)
+//        R=O(logN)
 
         /**
          * Поиск следующего элемента
@@ -133,7 +142,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
             }
             return current;
         }
-//         Итог:    T=O(N);
+//         Итог:    T=O(1);
 //                  R=O(logN)
 
         @Override
@@ -145,7 +154,9 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         @Override
         public T next() {
             current = findNext();
-            if (current == null) throw new NoSuchElementException();
+            if (current == null) {
+                throw new NoSuchElementException();
+            }
             return current.value;
         }
 
@@ -185,35 +196,43 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
 
     // standard function
-    public SortedSet<T> subSet(T fromElement, T toElement) throws IllegalArgumentException,NullPointerException {
-        return subSet(fromElement,true,toElement,false);
+    public SortedSet<T> subSet(T fromElement, T toElement) throws IllegalArgumentException, NullPointerException {
+        return subSet(fromElement, true, toElement, false);
     }
 
     public SortedSet<T> subSet(T fromElement, boolean fromInclusive, T toElement, boolean toInclusive)
-            throws IllegalArgumentException,NullPointerException {
+            throws IllegalArgumentException, NullPointerException {
 
         SortedSet<T> result = new BinaryTree<>();
         BinaryTreeIterator i = new BinaryTreeIterator();
 
-        if(fromElement.compareTo(toElement) > 0 ||
-        !this.contains(toElement) || !this.contains(fromElement)) throw new IllegalArgumentException();
+        if (fromElement.compareTo(toElement) > 0 ||
+                !this.contains(toElement) || !this.contains(fromElement)) {
+            throw new IllegalArgumentException();
+        }
 
-        while(i.hasNext()){
+        while (i.hasNext()) {
 
-           T next = i.next();
-           if(next.compareTo(toElement) == 0) {
-               if(toInclusive) result.add(next);
-               break;
+            T next = i.next();
+            if (next.compareTo(toElement) == 0) {
+                if (toInclusive) {
+                    result.add(next);
+                }
+                break;
             }
-            if(next.compareTo(fromElement) >= 0){
-                if(fromInclusive) result.add(next);
-                else fromInclusive = true;
+            if (next.compareTo(fromElement) >= 0) {
+                if (fromInclusive) {
+                    result.add(next);
+                } else {
+                    fromInclusive = true;
+                }
             }
         }
         return result;
     }
 //         Итог:    T=O(N);
 //                  R=O(N)
+
     /**
      * Найти множество всех элементов меньше заданного
      * Сложная
@@ -221,10 +240,11 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        return subSet(first(),toElement);
+        return subSet(first(), toElement);
     }
 //         Итог:    T=O(N);
 //                  R=O(N)
+
     /**
      * Найти множество всех элементов больше или равных заданного
      * Сложная
@@ -232,13 +252,16 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        return subSet(fromElement,true,last(),true);
+        return subSet(fromElement, true, last(), true);
     }
-//         Итог:    T=O(N);
+
+    //         Итог:    T=O(N);
 //                  R=O(N)
     @Override
     public T first() {
-        if (root == null) throw new NoSuchElementException();
+        if (root == null) {
+            throw new NoSuchElementException();
+        }
         Node<T> current = root;
         while (current.left != null) {
             current = current.left;
@@ -248,7 +271,9 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
 
     @Override
     public T last() {
-        if (root == null) throw new NoSuchElementException();
+        if (root == null) {
+            throw new NoSuchElementException();
+        }
         Node<T> current = root;
         while (current.right != null) {
             current = current.right;
