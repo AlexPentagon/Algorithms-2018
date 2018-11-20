@@ -74,33 +74,32 @@ public class JavaDynamicTasks {
             string = string + line + "-";
         }
         int width = string.split("-")[0].split(" ").length;
-        int heigh = string.split("-").length;
-        int[][] field = new int[heigh][width];
+        int height = string.split("-").length;
+        int[][] field = new int[height][width];
 
-        for(int i = 0;i < heigh;i++){
+        for(int i = 0;i < height;i++){
             for(int j = 0;j < width;j++){
                 field[i][j] = Integer.parseInt(string.split("-")[i].split(" ")[j]);
             }
         }
 
-        ArrayList<Integer> list = new ArrayList<>();
-        recursion(field,list,heigh-1,width-1,0);
+        for(int i = 0;i < height;i++) {
+            for (int j = 0; j < width; j++) {
+                field[i][j] = field[i][j] + getMinFromNeighbours(field,i,j);
+            }
+        }
 
-        return Collections.min(list);
+        return field[height-1][width-1];
     }
-//    Итог:  T=O(?)  ? - values of paths in matrix
-//           R=O(?)
+//    Итог:  T=O(m * n),  m - height of the field
+//           R=O(m * n),  n - width of the field
 
-    public static ArrayList<Integer> recursion(int[][] field,ArrayList<Integer> list,int x,int y,int sum){
-        int curr = field[x][y];
-        sum = sum + curr;
-        if(curr == 0 && sum != 0) list.add(sum);
+    public static int getMinFromNeighbours(int[][] field,int i,int j){
+        if(i == 0 && j == 0) return 0;
+        else if(i == 0) return field[i][j-1];
+        else if(j == 0) return field[i-1][j];
+        else return Math.min(Math.min(field[i-1][j-1],field[i][j-1]),field[i-1][j]);
 
-        if(x - 1 != -1 && y - 1 != -1) recursion(field,list,x - 1, y - 1,sum);
-        if(x - 1 != -1) recursion(field,list,x - 1, y,sum);
-        if(y - 1 != -1) recursion(field,list,x, y - 1,sum);
-
-        return list;
     }
 
     // Задачу "Максимальное независимое множество вершин в графе без циклов"

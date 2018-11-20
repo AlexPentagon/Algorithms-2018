@@ -218,6 +218,23 @@ abstract class AbstractGraphTests {
         assertEquals(setOf(graph["B"], graph["D"], graph["E"], graph["H"], graph["I"], graph["K"]),
                 independent)
 
+//        * A -- B
+//        * |    |
+//        * C -- D
+
+        graph = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            addConnection(a, b)
+            addConnection(a, c)
+            addConnection(b, d)
+            addConnection(c, d)
+        }.build()
+        independent = graph.largestIndependentVertexSet()
+        assertEquals(setOf(graph["A"], graph["D"]),
+                independent)
     }
 
     fun longestSimplePath(longestSimplePath: Graph.() -> Path) {
@@ -294,7 +311,7 @@ abstract class AbstractGraphTests {
             addConnection(j, k)
         }.build()
         val longestPath3 = graph3.longestSimplePath()
-        assertEquals(3, longestPath3.length)
+        assertEquals(6, longestPath3.length)
 
 
 //        *      G -- H -- J
@@ -305,7 +322,7 @@ abstract class AbstractGraphTests {
 //        * |
 //        * E
 
-        var graph4 = GraphBuilder().apply {
+        val graph4 = GraphBuilder().apply {
             val a = addVertex("A")
             val b = addVertex("B")
             val c = addVertex("C")
@@ -327,7 +344,7 @@ abstract class AbstractGraphTests {
             addConnection(h, j)
         }.build()
         val longestPath4 = graph4.longestSimplePath()
-        assertEquals(4, longestPath4.length)
+        assertEquals(6, longestPath4.length)
     }
 
 }

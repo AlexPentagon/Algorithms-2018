@@ -4,8 +4,10 @@ import kotlin.NotImplementedError;
 import lesson5.impl.GraphBuilder;
 import sun.security.provider.certpath.Vertex;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -122,12 +124,11 @@ public class JavaGraphTasks {
             if(result.contains(v.getBegin())) invertResult.add(v.getEnd());
             if(invertResult.contains(v.getBegin())) result.add(v.getEnd());
         }
-
         if(result.size() > invertResult.size()) return result;
         else  return invertResult;
     }
-//         Итог:    T=O(N);
-//                  R=O(N)
+//         Итог:    T=O(n) ,where n - edges in graph;
+//                  R=O(n)
     /**
      * Наидлиннейший простой путь.
      * Сложная
@@ -150,52 +151,32 @@ public class JavaGraphTasks {
      */
     public static Path longestSimplePath(Graph graph) {
 
-        List<Path> result = new ArrayList<>();
         Set<Graph.Vertex> vertices = graph.getVertices();
-        Set<Graph.Edge> connections = graph.getEdges();
-        Map<Graph.Vertex,ArrayList<Graph.Vertex>> map = new HashMap<>();
-        ArrayList<Graph.Vertex> list;
-
-        //building a map, where:
-        //keys - all Vertices.
-        //values - all variants of connections.
-        // T = O(keys * values);
-
-        for(Graph.Vertex v : vertices){
-            list = map.get(v);
-            if(list == null) map.put(v,new ArrayList<>());
-            for(Graph.Edge e : connections){
-                if(e.getBegin() == v) map.get(v).add(e.getEnd());
-                    if(e.getEnd() == v) map.get(v).add(e.getBegin());
-            }
-        }
-
-        //preparing for forming the list of all variants of paths
         Graph.Vertex first = vertices.iterator().next();
-        result.add(new Path(first));
+        Path best = new Path(first);
+        Deque<Path> deq = new ArrayDeque<>();
 
+        for(Graph.Vertex v : vertices) {
+            deq.add(new Path(v));
+        }
 
-        //forming the list of all variants of paths
-        for(int i = 0;i < result.size();i++) {
-            ArrayList<Graph.Vertex> l = map.get(result.get(i).getVertices().get(result.get(i).getVertices().size() - 1));
-            Path parentPath = result.get(i);
-            for (Graph.Vertex v : l) {
-                if (!parentPath.contains(v))
-                    result.add(new Path(parentPath, graph, v));
+        while (!deq.isEmpty()){
+            Path current = deq.pop();
+            List<Graph.Vertex> v = current.getVertices();
+            if(current.getLength() > best.getLength()){
+                best = current;
+                if(v.size() > vertices.size()) break;
+            }
+            Set<Graph.Vertex>  neighbors = graph.getNeighbors(v.get(v.size()-1));
+            for(Graph.Vertex n : neighbors){
+                if(!current.contains(n)){
+                    deq.push(new Path(current,graph,n));
+                }
             }
         }
-        //forming result
-        Path answer = null;
-        int size = result.get(0).getVertices().size();
-            for(Path e : result){
-                 if(size < e.getVertices().size()){
-                     size  =  e.getVertices().size();
-                     answer = e;
-                 }
-            }
 
-        return answer;
+        return best;
     }
 }
-// Итог: T=O(?)
-//       R=O(?)    ? - value of all variants of paths
+// Итог: T=O(v)
+//       R=O(v)    v - value of all vertices
